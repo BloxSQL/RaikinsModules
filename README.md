@@ -1,3 +1,5 @@
+# ALL THESE MUST GO IN REPLICATED STORAGE
+
 ---
 
 ## GameStore Module Documentation
