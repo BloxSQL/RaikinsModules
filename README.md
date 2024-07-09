@@ -108,7 +108,8 @@ The `GameStore` module provides functions to manage and transfer game data betwe
 ```lua
 -- Example usage of GameStore module
 
-local GameStore = require(path.to.GameStoreModule)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local GameStore = require(game.ReplicatedStorage.GameStore)
 
 -- Initialize GameStore
 GameStore.init()
@@ -238,7 +239,8 @@ The `PlayerStore` module facilitates storing, retrieving, and transferring playe
 ```lua
 -- Example usage of PlayerStore module
 
-local PlayerStore = require(path.to.PlayerStoreModule)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local PlayerStore = require(game.ReplicatedStorage.PlayerStore)
 
 -- Initialize PlayerStore
 PlayerStore.init()
