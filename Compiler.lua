@@ -45,6 +45,19 @@ function Compiler.decompress(dataName, compiledMain)
 	return combinedData[dataName]
 end
 
+function Compiler.Transfer(dataToTransfer, compiledMain)
+	local folder = getOrCreateCompiledDataFolder()
+	local mainDataValue = folder:FindFirstChild(compiledMain)
+
+	if not mainDataValue then
+		mainDataValue = Instance.new("StringValue")
+		mainDataValue.Name = compiledMain
+		mainDataValue.Parent = folder
+	end
+
+	mainDataValue.Value = dataToTransfer
+end
+
 function Compiler.Scrub(compiledMain)
 	local folder = getOrCreateCompiledDataFolder()
 	local mainDataValue = folder:FindFirstChild(compiledMain)
@@ -73,6 +86,18 @@ function Compiler.Erase(dataName, compiledMain)
 	else
 		warn("No data found with the name: " .. dataName .. " in " .. compiledMain)
 	end
+end
+
+function Compiler.Build(compiledMain)
+	local folder = getOrCreateCompiledDataFolder()
+	local mainDataValue = folder:FindFirstChild(compiledMain)
+
+	if not mainDataValue then
+		warn("No compiled data found with the name: " .. compiledMain)
+		return nil
+	end
+
+	return mainDataValue.Value
 end
 
 return Compiler
