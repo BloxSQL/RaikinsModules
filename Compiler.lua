@@ -100,4 +100,16 @@ function Compiler.Build(compiledMain)
 	return mainDataValue.Value
 end
 
+function Compiler.exist(dataName, compiledMain)
+	local folder = getOrCreateCompiledDataFolder()
+	local mainDataValue = folder:FindFirstChild(compiledMain)
+
+	if not mainDataValue then
+		return false
+	end
+
+	local combinedData = game.HttpService:JSONDecode(mainDataValue.Value)
+	return combinedData[dataName] ~= nil
+end
+
 return Compiler
