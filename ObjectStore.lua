@@ -79,6 +79,27 @@ function ObjectStore.retrieve(obj, valueName)
 	end
 end
 
+function ObjectStore.get(obj, valueName)
+	if not obj then
+		warn("Invalid object reference")
+		return nil
+	end
+
+	local valuesFolder = obj:FindFirstChild("Values")
+	if valuesFolder then
+		local value = valuesFolder:FindFirstChild(valueName)
+		if value then
+			return value
+		else
+			warn("Value not found in object storage")
+			return nil
+		end
+	else
+		warn("Values folder not found in object")
+		return nil
+	end
+end
+
 function ObjectStore.exist(obj, valueName)
 	if not obj then
 		warn("Invalid object reference")
