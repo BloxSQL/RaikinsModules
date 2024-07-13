@@ -73,6 +73,22 @@ function PlayerStore.retrieve(player, valueName)
 	end
 end
 
+function PlayerStore.get(player, valueName)
+	if not player or not player:IsA("Player") then
+		warn("Invalid player reference")
+		return nil
+	end
+
+	local value = player:FindFirstChild(valueName)
+	if value then
+		return value
+	else
+		warn("Value not found in player storage")
+		return nil
+	end
+end
+
+
 function PlayerStore.retrieveDS(player, valueName, dataStoreName)
 	if dataStoreName then
 		local dataStore = DataStoreService:GetDataStore(dataStoreName)
