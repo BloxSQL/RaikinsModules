@@ -55,6 +55,17 @@ function GameStore.retrieve(valueName)
 	end
 end
 
+function GameStore.get(valueName)
+	local gameData = ReplicatedStorage.GameData
+	local value = gameData:FindFirstChild(valueName)
+	if value then
+		return value
+	else
+		warn("Value not found in game data")
+		return nil
+	end
+end
+
 function GameStore.scrub(valueName)
 	local gameData = ReplicatedStorage.GameData
 	local value = gameData:FindFirstChild(valueName)
@@ -75,7 +86,7 @@ function GameStore.Transfer(valueName, dataStoreName)
 	end
 end
 
-function GameStore.storeDS(valueName, valueType, valueInput, dataStoreName)
+function GameStore.storeDS(valueName, valueInput, dataStoreName)
 	if dataStoreName then
 		local dataStore = DataStoreService:GetDataStore(dataStoreName)
 		local key = "GameData_" .. valueName
