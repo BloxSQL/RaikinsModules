@@ -1159,3 +1159,143 @@ TextRegister.TextJsonTransfer('{"playerStats": {"highScore": 500}}', "MyJsonFile
 ```
 
 ---
+
+## Registry Module Documentation
+
+### Overview
+
+The `Registry` module provides functions for managing and interacting with data stored in Roblox's `DataStoreService`. It supports adding and removing items, checking and updating player-specific data, and displaying or clearing stored data.
+
+### Usage
+
+1. **Creating a New Registry**
+
+   ```lua
+   local registry = Registry.new()
+   ```
+
+   - Creates a new instance of `Registry`.
+
+2. **Adding Items to a Store**
+
+   ```lua
+   registry:Add(itemName, baseStoreName)
+   ```
+
+   - Adds `itemName` to the registry under `baseStoreName`.
+   - `baseStoreName` is the base name for the data store.
+
+3. **Removing Items from a Store**
+
+   ```lua
+   registry:Remote(itemName, baseStoreName)
+   ```
+
+   - Removes `itemName` from the registry under `baseStoreName`.
+   - If no items are left under `baseStoreName`, it is removed from the registry.
+
+4. **Checking and Initializing Player Data**
+
+   ```lua
+   registry:PlayerCheck(player, baseStoreName)
+   ```
+
+   - Checks if the player has data stored under `baseStoreName`.
+   - Initializes data with default values if it does not exist.
+
+5. **Changing Player Data**
+
+   ```lua
+   registry:Change(player, itemName, value, baseStoreName)
+   ```
+
+   - Updates `itemName` to `value` for `player` under `baseStoreName`.
+   - If `itemName` does not exist, it will be added.
+
+6. **Retrieving Player Data**
+
+   ```lua
+   registry:PlayerRetrieve(player, itemName, baseStoreName)
+   ```
+
+   - Retrieves the value of `itemName` for `player` from `baseStoreName`.
+
+7. **Showing All Items in a Store**
+
+   ```lua
+   registry:Show(baseStoreName)
+   ```
+
+   - Retrieves all item names stored under `baseStoreName` across multiple data stores (up to 10).
+   - Returns the list of item names in JSON format.
+
+8. **Showing Player Data**
+
+   ```lua
+   registry:ShowPlayer(player, baseStoreName)
+   ```
+
+   - Retrieves and returns player-specific data for `player` from `baseStoreName` in JSON format.
+
+9. **Scrubbing All Data from a Store**
+
+   ```lua
+   registry:Scrub(baseStoreName)
+   ```
+
+   - Removes all data from `baseStoreName` across multiple data stores (up to 10).
+
+10. **Scrubbing Player-Specific Data**
+
+    ```lua
+    registry:PlayerScrub(player, baseStoreName)
+    ```
+
+   - Removes all data associated with `player` from `baseStoreName`.
+
+### Internal Functions
+
+- **generateDataStoreName(baseName, index)**: Generates a unique data store name based on `baseName` and `index`.
+
+### Example Usage
+
+```lua
+-- Example usage of Registry module
+
+local Registry = require(game.ReplicatedStorage.Registry)
+local registry = Registry.new()
+
+-- Add items to a store
+registry:Add("item1", "BaseStore")
+registry:Add("item2", "BaseStore")
+
+-- Remove an item from a store
+registry:Remote("item1", "BaseStore")
+
+-- Check and initialize player data
+local player = game.Players.LocalPlayer
+registry:PlayerCheck(player, "BaseStore")
+
+-- Change player data
+registry:Change(player, "item2", true, "BaseStore")
+
+-- Retrieve player data
+local itemValue = registry:PlayerRetrieve(player, "item2", "BaseStore")
+print("Item Value:", itemValue)
+
+-- Show all items in a store
+local allItems = registry:Show("BaseStore")
+print("All Items:", allItems)
+
+-- Show player data
+local playerData = registry:ShowPlayer(player, "BaseStore")
+print("Player Data:", playerData)
+
+-- Scrub all data from a store
+registry:Scrub("BaseStore")
+
+-- Scrub player-specific data
+registry:PlayerScrub(player, "BaseStore")
+```
+
+---
