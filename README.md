@@ -1168,13 +1168,13 @@ The `Registry` module provides functions for managing and interacting with data 
 
 ### Usage
 
-1. **Creating a New Registry**
+1. **Using the registry**
 
    ```lua
-   local registry = Registry.new()
+   local registry = Registry.init()
    ```
 
-   - Creates a new instance of `Registry`.
+   - Creates a empty table for the registry.
 
 2. **Adding Items to a Store**
 
@@ -1263,7 +1263,7 @@ The `Registry` module provides functions for managing and interacting with data 
 -- Example usage of Registry module
 
 local Registry = require(game.ReplicatedStorage.Registry)
-local registry = Registry.new()
+local registry = Registry.init()
 
 -- Add items to a store
 registry:Add("item1", "BaseStore")

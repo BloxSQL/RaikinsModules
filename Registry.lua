@@ -8,7 +8,7 @@ local function generateDataStoreName(baseName, index)
     return baseName .. "_" .. tostring(index)
 end
 
-function Registry.new()
+function Registry.init()
     local self = setmetatable({}, Registry)
     self.registry = {}
     return self
