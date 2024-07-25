@@ -981,3 +981,104 @@ end
 - **TableExists(tableName)**: Checks if a table exists.
 
 ---
+
+## GlobalVar Module Documentation
+
+### Overview
+
+The `GlobalVar` module provides functionality to manage global and package-specific variables. It allows for adding, removing, and retrieving variables both globally and within specific packages.
+
+### Usage
+
+1. **Adding a Global Variable**
+
+   ```lua
+   GlobalVar.Add(varName, varValue)
+   ```
+
+   - Adds or updates a global variable with the specified `varName` and `varValue`.
+   - If `varName` already exists, its value is updated to `varValue`.
+
+2. **Removing a Global Variable**
+
+   ```lua
+   GlobalVar.Remove(varName)
+   ```
+
+   - Removes the global variable with the specified `varName`.
+   - If `varName` does not exist, no action is taken.
+
+3. **Retrieving a Global Variable**
+
+   ```lua
+   GlobalVar.Retrieve(varName)
+   ```
+
+   - Retrieves the value of the global variable with the specified `varName`.
+   - Returns `nil` if the variable does not exist.
+
+4. **Adding a Package-Specific Variable**
+
+   ```lua
+   GlobalVar.AddPA(varName, varPackage)
+   ```
+
+   - Adds or updates a package-specific variable with the specified `varName` and `varPackage`.
+   - `varPackage` must be a table. An error is raised if `varPackage` is not a table.
+
+5. **Removing a Package-Specific Variable**
+
+   ```lua
+   GlobalVar.RemovePA(varName)
+   ```
+
+   - Removes the package-specific variable with the specified `varName`.
+   - If `varName` does not exist, no action is taken.
+
+6. **Retrieving a Package-Specific Variable**
+
+   ```lua
+   GlobalVar.RetrievePA(varName)
+   ```
+
+   - Retrieves the table associated with the package-specific variable with the specified `varName`.
+   - Returns `nil` if the variable does not exist.
+
+### Example Usage
+
+```lua
+-- Example usage of GlobalVar module
+
+local GlobalVar = require(game.ReplicatedStorage.GlobalVar)
+
+-- Add a global variable
+GlobalVar.Add("PlayerCount", 50)
+
+-- Retrieve a global variable
+local playerCount = GlobalVar.Retrieve("PlayerCount")
+print("Current player count:", playerCount) -- Output: Current player count: 50
+
+-- Remove a global variable
+GlobalVar.Remove("PlayerCount")
+
+-- Add a package-specific variable
+GlobalVar.AddPA("Config", {level = 1, difficulty = "normal"})
+
+-- Retrieve a package-specific variable
+local config = GlobalVar.RetrievePA("Config")
+print("Package config:", config.level, config.difficulty) -- Output: Package config: 1 normal
+
+-- Remove a package-specific variable
+GlobalVar.RemovePA("Config")
+```
+
+### Internal Functionality
+
+- **Add(varName, varValue)**: Adds or updates a global variable.
+- **Remove(varName)**: Removes a global variable.
+- **Retrieve(varName)**: Retrieves the value of a global variable.
+- **AddPA(varName, varPackage)**: Adds or updates a package-specific variable. `varPackage` must be a table.
+- **RemovePA(varName)**: Removes a package-specific variable.
+- **RetrievePA(varName)**: Retrieves the package-specific variable, which is a table.
+
+---
