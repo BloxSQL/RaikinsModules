@@ -106,10 +106,10 @@ The `GameStore` module provides functions to manage and transfer game data betwe
 8. **Getting Value Instances**
 
    ```lua
-   GameStore.get(obj, valueName)
+   GameStore.get(valueName)
    ```
 
-    - Retrieves the value instance associated with `valueName` from the given `obj`.
+    - Retrieves the value instance associated with `valueName`.
     - Returns `nil` if the value is not found or if there is an invalid object reference.
 
 
@@ -247,10 +247,10 @@ The `PlayerStore` module facilitates storing, retrieving, and transferring playe
 11**Getting Value Instances**
 
    ```lua
-   PlayerStore.get(obj, valueName)
+   PlayerStore.get(player, valueName)
    ```
 
-    - Retrieves the value instance associated with `valueName` from the given `obj`.
+    - Retrieves the value instance associated with `valueName` from the given `player`.
     - Returns `nil` if the value is not found or if there is an invalid object reference.
 
 ### Example Usage
