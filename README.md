@@ -1044,3 +1044,118 @@ print("Removed PlayerHighScore:", GlobalVar.Retrieve("PlayerHighScore")) -- Outp
 - **Retrieve(varName)**: Retrieves the value of the global variable with the specified name.
 
 ---
+
+## TextRegister Module Documentation
+
+### Overview
+
+The `TextRegister` module provides functions for managing text and JSON data stored in `ModuleScript` instances within a specified parent. It supports adding, reading, overwriting, and manipulating text, as well as handling JSON data with various operations.
+
+### Usage
+
+1. **Adding Text**
+
+   ```lua
+   TextRegister.TextAdd(text, filename, parent, append)
+   ```
+
+   - Adds `text` to the specified `filename` in the `parent`.
+   - If `append` is `true`, appends the `text` to existing content. If `append` is `false`, replaces the existing content with `text`.
+
+2. **Reading Text**
+
+   ```lua
+   TextRegister.TextRead(filename, parent)
+   ```
+
+   - Retrieves the text from the specified `filename` in the `parent`.
+
+3. **Overwriting Text**
+
+   ```lua
+   TextRegister.TextOverwrite(text, filename, parent, append)
+   ```
+
+   - Overwrites the text in the specified `filename` in the `parent`.
+   - If `append` is `true`, appends `text` to existing content. If `append` is `false`, replaces existing content with `text`.
+
+4. **Adding JSON Data**
+
+   ```lua
+   TextRegister.TextJsonAdd(fieldName, fieldInput, section, filename, parent)
+   ```
+
+   - Adds or updates `fieldInput` in the `section` of the JSON data stored in `filename` in the `parent`.
+
+5. **Reading JSON Data**
+
+   ```lua
+   TextRegister.TextJsonRead(fieldName, section, filename, parent)
+   ```
+
+   - Retrieves the value of `fieldName` from the specified `section` in the JSON data stored in `filename` in the `parent`.
+
+6. **Removing JSON Data**
+
+   ```lua
+   TextRegister.TextJsonRemove(fieldName, section, filename, parent)
+   ```
+
+   - Removes the `fieldName` from the specified `section` in the JSON data stored in `filename` in the `parent`.
+
+7. **Building JSON Data**
+
+   ```lua
+   TextRegister.TextJsonBuild(filename, parent)
+   ```
+
+   - Retrieves the entire JSON data as a string from the `filename` in the `parent`.
+
+8. **Transferring JSON Data**
+
+   ```lua
+   TextRegister.TextJsonTransfer(dataToImport, filename, parent)
+   ```
+
+   - Replaces the content of `filename` in the `parent` with the provided `dataToImport`.
+
+### Internal Functions
+
+- **getFile(parent, filename)**: Retrieves or creates a `ModuleScript` named `filename` within `parent`. Initializes it with an empty JSON object if it does not exist.
+
+### Example Usage
+
+```lua
+-- Example usage of TextRegister module
+
+local TextRegister = require(game.ReplicatedStorage.TextRegister)
+
+-- Add text to a file
+TextRegister.TextAdd("Hello, world!", "MyTextFile", game.ReplicatedStorage, false)
+
+-- Read text from a file
+local text = TextRegister.TextRead("MyTextFile", game.ReplicatedStorage)
+print("Text in file:", text) -- Output: Text in file: Hello, world!
+
+-- Overwrite text in a file
+TextRegister.TextOverwrite("New text content", "MyTextFile", game.ReplicatedStorage, false)
+
+-- Add JSON data
+TextRegister.TextJsonAdd("userScore", 100, "playerStats", "MyJsonFile", game.ReplicatedStorage)
+
+-- Read JSON data
+local score = TextRegister.TextJsonRead("userScore", "playerStats", "MyJsonFile", game.ReplicatedStorage)
+print("User score:", score) -- Output: User score: 100
+
+-- Remove JSON data
+TextRegister.TextJsonRemove("userScore", "playerStats", "MyJsonFile", game.ReplicatedStorage)
+
+-- Build JSON data
+local jsonData = TextRegister.TextJsonBuild("MyJsonFile", game.ReplicatedStorage)
+print("JSON Data:", jsonData)
+
+-- Transfer JSON data
+TextRegister.TextJsonTransfer('{"playerStats": {"highScore": 500}}', "MyJsonFile", game.ReplicatedStorage)
+```
+
+---
