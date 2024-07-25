@@ -9,7 +9,7 @@ local function getFile(parent, filename)
 		file = Instance.new("StringValue")
 		file.Name = filename
 		file.Parent = parent
-		file.Value = "{}" -- Initialize with empty JSON
+		file.Value = "{}"
 	end
 	return file
 end
