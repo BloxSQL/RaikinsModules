@@ -55,14 +55,7 @@ end
 function BanAPI.CaseCheck(caseID)
     local caseInfo = caseIDStore:GetAsync(tostring(caseID))
     if caseInfo then
-        return {
-            Player = caseInfo.Player,
-            CaseID = caseInfo.CaseID,
-            Reason = caseInfo.Reason,
-            Banstatus = caseInfo.Banstatus
-        }
-    else
-        return nil
+        return caseInfo
     end
 end
 
