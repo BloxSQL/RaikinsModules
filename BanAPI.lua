@@ -52,6 +52,15 @@ function BanAPI.Check(Player)
     end
 end
 
+function BanAPI.CheckData(Player)
+    local playerId = Player.UserId
+    local banInfo = banDataStore:GetAsync(tostring(playerId))
+    if banInfo and banInfo.Banstatus == "Active" then
+        local caseInfo = caseIDStore:GetAsync(banInfo.CaseID)
+        return caseInfo
+    end
+end
+
 function BanAPI.CaseCheck(caseID)
     local caseInfo = caseIDStore:GetAsync(tostring(caseID))
     if caseInfo then
