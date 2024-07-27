@@ -1299,3 +1299,124 @@ registry:PlayerScrub(player, "BaseStore")
 ```
 
 ---
+
+## BanAPI Module Documentation
+
+### Overview
+
+The `BanAPI` module provides functionality for banning and unbanning players, checking their ban status, and managing ban cases within a Roblox game. It interacts with Roblox's `DataStoreService` to store and retrieve ban information and case IDs.
+
+### Functions
+
+#### `BanAPI.BanUser(Player, Reason)`
+
+Bans a user and assigns a unique case ID to the ban.
+
+- **Parameters:**
+   - `Player` (Instance): The player to be banned.
+   - `Reason` (string): The reason for the ban.
+
+- **Returns:**
+   - `caseID` (number): The unique case ID assigned to the ban.
+
+- **Usage:**
+
+  ```lua
+  local caseID = BanAPI.BanUser(player, "Breaking the rules")
+  if caseID then
+      print("Player banned with case ID:", caseID)
+  else
+      print("Failed to ban player.")
+  end
+  ```
+
+#### `BanAPI.UnBanUser(PlayerID)`
+
+Unbans a user by marking their ban status as "Resolved".
+
+- **Parameters:**
+   - `PlayerID` (number): The user ID of the player to be unbanned.
+
+- **Usage:**
+
+  ```lua
+  BanAPI.UnBanUser(12345678)
+  ```
+
+#### `BanAPI.Check(Player)`
+
+Checks if a player is banned and kicks them if they are.
+
+- **Parameters:**
+   - `Player` (Instance): The player to check.
+
+- **Usage:**
+
+  ```lua
+  BanAPI.Check(player)
+  ```
+
+#### `BanAPI.CaseCheck(caseID)`
+
+Retrieves information about a specific ban case using its case ID.
+
+- **Parameters:**
+   - `caseID` (number): The ID of the case to check.
+
+- **Returns:**
+   - `caseInfo` (table): A table containing case information (Player, CaseID, Reason, Banstatus).
+
+- **Usage:**
+
+  ```lua
+  local caseInfo = BanAPI.CaseCheck(1)
+  if caseInfo then
+      print("Case Info:", caseInfo.Player, caseInfo.Reason, caseInfo.Banstatus)
+  else
+      print("Case not found.")
+  end
+  ```
+
+### Internal Functions
+
+#### `getNextCaseID()`
+
+Generates the next case ID by incrementing the last case ID stored in `caseCounterStore`.
+
+- **Returns:**
+   - `caseID` (number): The next case ID if successful, `nil` otherwise.
+
+- **Usage:**
+  This function is used internally by `BanAPI.BanUser` to assign a unique case ID to each ban.
+
+### Example Usage
+
+```lua
+-- Example usage of BanAPI module
+
+local BanAPI = require(game.ServerScriptService.BanAPI)
+
+-- Ban a player
+local caseID = BanAPI.BanUser(player, "Cheating")
+if caseID then
+    print("Player banned with case ID:", caseID)
+else
+    print("Failed to ban player.")
+end
+
+-- Check if a player is banned
+BanAPI.Check(player)
+
+-- Unban a player
+BanAPI.UnBanUser(12345678)
+
+-- Check a specific case
+local caseInfo = BanAPI.CaseCheck(1)
+if caseInfo then
+    print("Case Info:", caseInfo.Player, caseInfo.Reason, caseInfo.Banstatus)
+else
+    print("Case not found.")
+end
+```
+
+---
