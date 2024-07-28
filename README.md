@@ -1420,3 +1420,75 @@ end
 ```
 
 ---
+
+## LocationStore Module Documentation
+
+### Overview
+
+The `LocationStore` module provides functionality to store and retrieve the pivot points of objects in a Roblox game. It allows for the conversion of an object's pivot to a string format for easy storage and the conversion back to a `CFrame` for retrieval.
+
+### Functions
+
+#### `LocationStore.Add(object)`
+
+Converts the pivot point of a given object to a string format.
+
+- **Parameters:**
+   - `object` (Instance): The object whose pivot point is to be stored.
+
+- **Returns:**
+   - `pivot` (string): The string representation of the object's pivot point.
+
+- **Usage:**
+
+  ```lua
+  local objectPivotString = LocationStore.Add(someObject)
+  print("Stored Pivot String:", objectPivotString)
+  ```
+
+#### `LocationStore.Retrieve(PivotString)`
+
+Converts a stored pivot string back to a `CFrame` object.
+
+- **Parameters:**
+   - `PivotString` (string): The string representation of the pivot point.
+
+- **Returns:**
+   - `CFrame` (CFrame): The `CFrame` object representing the pivot point, or `nil` if `PivotString` is not provided.
+
+- **Usage:**
+
+  ```lua
+  local pivotString = "0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1"
+  local pivotCFrame = LocationStore.Retrieve(pivotString)
+  print("Retrieved CFrame:", pivotCFrame)
+  ```
+
+### Example Usage
+
+```lua
+-- Example usage of LocationStore module
+
+local LocationStore = require(game.ServerScriptService.LocationStore)
+
+-- Store the pivot of an object
+local someObject = workspace.SomePart
+local pivotString = LocationStore.Add(someObject)
+print("Stored Pivot String:", pivotString)
+
+-- Retrieve the CFrame from the stored pivot string
+local retrievedCFrame = LocationStore.Retrieve(pivotString)
+if retrievedCFrame then
+    print("Retrieved CFrame:", retrievedCFrame)
+else
+    print("Failed to retrieve CFrame.")
+end
+```
+
+### Notes
+
+- The `Add` function relies on the `GetPivot` method of the object, which returns the pivot point as a `CFrame`.
+- The `Retrieve` function splits the string representation of the pivot point and converts it back to a `CFrame` using the `CFrame.new` constructor.
+- Ensure the object has a valid pivot point before storing it using `LocationStore.Add`.
+
+---
