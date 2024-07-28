@@ -9,7 +9,7 @@ end
 
 function LocationStore.Retrieve(PivotString)
     if not PivotString then
-        return nil
+        return
     end
 
     local PackedCframe = PivotString:split(", ")
