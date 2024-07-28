@@ -1,7 +1,5 @@
 local LocationStore = {}
 
-local storedPivotString = nil
-
 function LocationStore.Add(object)
     local pivot = tostring(object:GetPivot())
     return pivot
