@@ -1,3 +1,4 @@
+
 local TimeControl = {}
 
 local function toSeconds(package)
@@ -111,6 +112,34 @@ function TimeControl.TimeCheck(seconds, type)
     else
         return "Invalid type"
     end
+end
+
+function TimeControl.FutureTimestamp(timeData)
+    local currentTime = os.date("*t")
+
+    local futureTime = {
+        year = currentTime.year + (timeData.years or 0),
+        month = currentTime.month + (timeData.months or 0),
+        day = currentTime.day + (timeData.days or 0),
+        hour = currentTime.hour + (timeData.hours or 0),
+        min = currentTime.min + (timeData.minutes or 0),
+        sec = currentTime.sec + (timeData.seconds or 0)
+    }
+
+    futureTime.month = futureTime.month % 12
+    futureTime.year = futureTime.year + math.floor(futureTime.month / 12)
+    futureTime.day = futureTime.day % 31
+
+    local timestamp = os.time({
+        year = futureTime.year,
+        month = futureTime.month,
+        day = futureTime.day,
+        hour = futureTime.hour,
+        min = futureTime.min,
+        sec = futureTime.sec
+    })
+
+    return TimeControl.CreateTimestamp()
 end
 
 return TimeControl

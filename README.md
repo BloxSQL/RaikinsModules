@@ -1497,7 +1497,7 @@ end
 
 ### Overview
 
-The `TimeControl` module provides functionality for converting time units to seconds, creating and decompressing timestamps, comparing timestamps, and converting seconds into various time units. It is useful for managing and manipulating time data within a Roblox game.
+The `TimeControl` module provides functionality for converting time units to seconds, creating and decompressing timestamps, comparing timestamps, converting seconds into various time units, and calculating future timestamps based on current time and a given time increment.
 
 ### Functions
 
@@ -1603,6 +1603,30 @@ Converts seconds into a specific time unit based on the provided type.
   print("Milliseconds:", milliseconds)
   ```
 
+#### `TimeControl.FutureTimestamp(timeData)`
+
+Calculates a future timestamp based on the current time and a given time increment.
+
+- **Parameters:**
+   - `timeData` (table): A table containing the time increment (`years`, `months`, `days`, `hours`, `minutes`, `seconds`).
+
+- **Returns:**
+   - `timestamp` (string): The future timestamp formatted as `T<AM/PM><MMDDYYYY><HHMMSS`.
+
+- **Usage:**
+
+  ```lua
+  local futureTimestamp = TimeControl.FutureTimestamp({
+      years = 1,
+      months = 2,
+      days = 5,
+      hours = 3,
+      minutes = 30,
+      seconds = 15
+  })
+  print("Future Timestamp:", futureTimestamp)
+  ```
+
 ### Notes
 
 - The `TimeCreate` function converts a time package to seconds using predefined constants for the number of seconds in a year, month, day, hour, minute, and millisecond.
@@ -1610,5 +1634,6 @@ Converts seconds into a specific time unit based on the provided type.
 - The `DecompressTimestamp` function parses a timestamp string to retrieve date and time components, adjusting for AM/PM notation.
 - The `TimeStampCompare` function calculates the time difference between two timestamps by converting them to seconds and finding the absolute difference.
 - The `TimeCheck` function allows for conversion from seconds to various time units, including milliseconds.
+- The `FutureTimestamp` function calculates a future date and time by adding the specified time increments to the current date and time, and returns it as a formatted timestamp.
 
 ---
