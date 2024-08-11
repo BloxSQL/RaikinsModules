@@ -1492,3 +1492,123 @@ end
 - Ensure the object has a valid pivot point before storing it using `LocationStore.Add`.
 
 ---
+
+## TimeControl Module Documentation
+
+### Overview
+
+The `TimeControl` module provides functionality for converting time units to seconds, creating and decompressing timestamps, comparing timestamps, and converting seconds into various time units. It is useful for managing and manipulating time data within a Roblox game.
+
+### Functions
+
+#### `TimeControl.TimeCreate(package)`
+
+Converts a time package to seconds.
+
+- **Parameters:**
+   - `package` (table): A table containing time units (`years`, `months`, `days`, `hours`, `minutes`, `seconds`, `milliseconds`).
+
+- **Returns:**
+   - `seconds` (number): The total time converted to seconds.
+
+- **Usage:**
+
+  ```lua
+  local timeInSeconds = TimeControl.TimeCreate({
+      years = 1,
+      months = 2,
+      days = 5,
+      hours = 3,
+      minutes = 30,
+      seconds = 15,
+      milliseconds = 500
+  })
+  print("Time in seconds:", timeInSeconds)
+  ```
+
+#### `TimeControl.CreateTimestamp()`
+
+Creates a timestamp string in the format `T<AM/PM><MMDDYYYY><HHMMSS>` based on the current time.
+
+- **Returns:**
+   - `timestamp` (string): The formatted timestamp string.
+
+- **Usage:**
+
+  ```lua
+  local timestamp = TimeControl.CreateTimestamp()
+  print("Current Timestamp:", timestamp)
+  ```
+
+#### `TimeControl.DecompressTimestamp(timestampString)`
+
+Decompresses a timestamp string into a table with date and time components.
+
+- **Parameters:**
+   - `timestampString` (string): The timestamp string to decompress.
+
+- **Returns:**
+   - `timeTable` (table): A table containing `year`, `month`, `day`, `hour`, `minute`, `second`.
+
+- **Usage:**
+
+  ```lua
+  local timeTable = TimeControl.DecompressTimestamp("T01202308151230")
+  print("Decompressed Time:", timeTable.year, timeTable.month, timeTable.day, timeTable.hour, timeTable.minute, timeTable.second)
+  ```
+
+#### `TimeControl.TimeStampCompare(timestamp1, timestamp2)`
+
+Compares two timestamp strings and returns the absolute difference in seconds.
+
+- **Parameters:**
+   - `timestamp1` (string): The first timestamp string.
+   - `timestamp2` (string): The second timestamp string.
+
+- **Returns:**
+   - `difference` (number): The absolute difference in seconds between the two timestamps.
+
+- **Usage:**
+
+  ```lua
+  local difference = TimeControl.TimeStampCompare("T01202308151230", "T01202308161230")
+  print("Timestamp Difference (seconds):", difference)
+  ```
+
+#### `TimeControl.TimeCheck(seconds, type)`
+
+Converts seconds into a specific time unit based on the provided type.
+
+- **Parameters:**
+   - `seconds` (number): The time in seconds.
+   - `type` (number): The type of time unit to convert to. Possible values:
+      - 1: Months
+      - 2: Years
+      - 3: Days
+      - 4: Hours
+      - 5: Minutes
+      - 6: Seconds
+      - 7: Milliseconds
+
+- **Returns:**
+   - `convertedValue` (number or string): The time converted to the specified unit or "Invalid type" if the type is not valid.
+
+- **Usage:**
+
+  ```lua
+  local months = TimeControl.TimeCheck(31536000, 1)
+  print("Months:", months)
+
+  local milliseconds = TimeControl.TimeCheck(3600, 7)
+  print("Milliseconds:", milliseconds)
+  ```
+
+### Notes
+
+- The `TimeCreate` function converts a time package to seconds using predefined constants for the number of seconds in a year, month, day, hour, minute, and millisecond.
+- The `CreateTimestamp` function generates a timestamp in a specific format to capture the current date and time.
+- The `DecompressTimestamp` function parses a timestamp string to retrieve date and time components, adjusting for AM/PM notation.
+- The `TimeStampCompare` function calculates the time difference between two timestamps by converting them to seconds and finding the absolute difference.
+- The `TimeCheck` function allows for conversion from seconds to various time units, including milliseconds.
+
+---
