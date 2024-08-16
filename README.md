@@ -1637,3 +1637,44 @@ Calculates a future timestamp based on the current time and a given time increme
 - The `FutureTimestamp` function calculates a future date and time by adding the specified time increments to the current date and time, and returns it as a formatted timestamp.
 
 ---
+
+## DistanceService Module Documentation
+
+### Overview
+
+The `DistanceService` module provides a simple utility function to calculate the distance between two objects in a Roblox game. The distance is calculated based on the positions of the objects' pivots.
+
+### Functions
+
+#### `DistanceService.GetDistance(SourceObject, CheckObject)`
+
+Calculates the distance between two objects using their pivot positions.
+
+- **Parameters:**
+   - `SourceObject` (Instance): The first object to measure from.
+   - `CheckObject` (Instance): The second object to measure to.
+
+- **Returns:**
+   - `distance` (number): The distance between the two objects, measured in studs.
+
+- **Errors:**
+   - Throws an error if either `SourceObject` or `CheckObject` is not provided.
+
+- **Usage:**
+
+  ```lua
+  local DistanceService = require(game.ServerScriptService.DistanceService)
+
+  local sourceObject = workspace.Part1
+  local checkObject = workspace.Part2
+
+  local distance = DistanceService.GetDistance(sourceObject, checkObject)
+  print("Distance between objects:", distance)
+  ```
+
+### Notes
+
+- The function uses the `GetPivot` method to retrieve the pivot point of each object, then calculates the distance between the two points using vector subtraction and the `.Magnitude` property.
+- Ensure that both `SourceObject` and `CheckObject` have valid pivot points before calling this function.
+
+---
