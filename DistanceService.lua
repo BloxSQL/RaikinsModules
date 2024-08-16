@@ -16,7 +16,7 @@ function DistanceService.GetDistance(SourceObject, CheckObject)
 	return distance
 end
 
-function DistanceService.RotateTo(SourceObject, Target, TimeToRotate)
+function DistanceService.RotateTo(SourceObject, Target, TimeToRotate, CordFrame)
 	if not SourceObject or not TimeToRotate then
 		error("SourceObject and TimeToRotate must be provided.")
 	end
@@ -39,16 +39,18 @@ function DistanceService.RotateTo(SourceObject, Target, TimeToRotate)
 			goal = { CFrame = targetCFrame }
 		end
 	else
-		if Target.X and Target.Y and Target.Z then
-			local rotation = { X = Target.X, Y = Target.Y, Z = Target.Z }
-			local currentCFrame = SourceObject.CFrame
-			local targetCFrame = currentCFrame * CFrame.Angles(math.rad(rotation.X), math.rad(rotation.Y), math.rad(rotation.Z))
-			goal = { CFrame = targetCFrame }
-		else
-			local rotation = { X = 90, Y = 0, Z = 0 }
-			local currentCFrame = SourceObject.CFrame
-			local targetCFrame = currentCFrame * CFrame.Angles(math.rad(rotation.X), math.rad(rotation.Y), math.rad(rotation.Z))
-			goal = { CFrame = targetCFrame }
+		if Target == nil then
+			if CordFrame ~= nil and CordFrame:IsA("Table") then
+				local rotation = { X = CordFrame.X or 0, Y = CordFrame.Y or 0, Z = CordFrame.Z or 0 }
+				local currentCFrame = SourceObject.CFrame
+				local targetCFrame = currentCFrame * CFrame.Angles(math.rad(rotation.X), math.rad(rotation.Y), math.rad(rotation.Z))
+				goal = { CFrame = targetCFrame }
+			else
+				local rotation = { X = 0, Y = 0, Z = 0 }
+				local currentCFrame = SourceObject.CFrame
+				local targetCFrame = currentCFrame * CFrame.Angles(math.rad(rotation.X), math.rad(rotation.Y), math.rad(rotation.Z))
+				goal = { CFrame = targetCFrame }
+			end
 		end
 	end
 
