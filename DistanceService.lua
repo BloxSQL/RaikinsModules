@@ -98,19 +98,29 @@ function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
 		movingObjects[ObjectToMove].Tween:Cancel()
 	end
 
+	local success = false
+	local tweenCompletedConnection
+
+	tweenCompletedConnection = tween.Completed:Connect(function(status)
+		if status == Enum.PlaybackState.Completed then
+			success = true
+		else
+			success = false
+		end
+	end)
+
 	tween:Play()
 	movingObjects[ObjectToMove] = {Tween = tween, Target = targetPosition, MovingType = "MoveTo"}
 
-	local success, errorMessage = pcall(function()
-		wait(TimeToMove)
-	end)
+	wait(TimeToMove)
 
-	if not success then
-		return false
-	end
+	-- Cleanup
+	movingObjects[ObjectToMove] = nil
+	tweenCompletedConnection:Disconnect()
 
-	return true
+	return success
 end
+
 
 
 
