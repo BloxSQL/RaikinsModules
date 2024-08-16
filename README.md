@@ -1642,39 +1642,114 @@ Calculates a future timestamp based on the current time and a given time increme
 
 ### Overview
 
-The `DistanceService` module provides a simple utility function to calculate the distance between two objects in a Roblox game. The distance is calculated based on the positions of the objects' pivots.
+The `DistanceService` module provides functionality for calculating distances between objects, moving and rotating objects using tweens, managing ongoing tweens, and detecting objects within a certain distance from a given object. It leverages Roblox's `TweenService` to create smooth transitions.
 
 ### Functions
 
 #### `DistanceService.GetDistance(SourceObject, CheckObject)`
 
-Calculates the distance between two objects using their pivot positions.
+Calculates the distance between two objects.
 
 - **Parameters:**
-   - `SourceObject` (Instance): The first object to measure from.
-   - `CheckObject` (Instance): The second object to measure to.
+   - `SourceObject` (Instance): The object from which the distance is measured.
+   - `CheckObject` (Instance): The object to which the distance is measured.
 
 - **Returns:**
-   - `distance` (number): The distance between the two objects, measured in studs.
-
-- **Errors:**
-   - Throws an error if either `SourceObject` or `CheckObject` is not provided.
+   - `distance` (number): The distance between the two objects.
 
 - **Usage:**
 
   ```lua
-  local DistanceService = require(game.ServerScriptService.DistanceService)
+  local distance = DistanceService.GetDistance(part1, part2)
+  print("Distance between parts:", distance)
+  ```
 
-  local sourceObject = workspace.Part1
-  local checkObject = workspace.Part2
+#### `DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)`
 
-  local distance = DistanceService.GetDistance(sourceObject, checkObject)
-  print("Distance between objects:", distance)
+Moves an object to a target position over a specified duration using a tween.
+
+- **Parameters:**
+   - `ObjectToMove` (Instance): The object to be moved.
+   - `Target` (Instance, Vector3): The target position or object to move to.
+   - `TimeToMove` (number): The duration of the movement in seconds.
+
+- **Usage:**
+
+  ```lua
+  DistanceService.MoveTo(part, workspace.TargetPart, 5)
+  ```
+
+#### `DistanceService.RotateTo(Object, Target, TimeToRotate)`
+
+Rotates an object to face a target direction or orientation over a specified duration using a tween.
+
+- **Parameters:**
+   - `Object` (Instance): The object to be rotated.
+   - `Target` (Instance, CFrame, Vector3, number): The target orientation or direction. Can be a `BasePart`, `CFrame`, `Vector3`, or a number (rotation in degrees).
+   - `TimeToRotate` (number): The duration of the rotation in seconds.
+
+- **Usage:**
+
+  ```lua
+  DistanceService.RotateTo(part, workspace.TargetPart, 3)
+  ```
+
+#### `DistanceService.OverrideMovement(Object)`
+
+Stops any ongoing tweens on the object and overrides its current position or orientation.
+
+- **Parameters:**
+   - `Object` (Instance): The object whose movement is to be overridden.
+
+- **Usage:**
+
+  ```lua
+  DistanceService.OverrideMovement(part)
+  ```
+
+#### `DistanceService.IsMoving(Object)`
+
+Checks if an object is currently moving (i.e., has an ongoing tween).
+
+- **Parameters:**
+   - `Object` (Instance): The object to check.
+
+- **Returns:**
+   - `isMoving` (boolean): `true` if the object is moving, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local isMoving = DistanceService.IsMoving(part)
+  print("Is part moving?", isMoving)
+  ```
+
+#### `DistanceService.IsClose(Object, Distance, IgnoreList)`
+
+Finds and returns objects within a specified distance from a given object.
+
+- **Parameters:**
+   - `Object` (Instance): The reference object.
+   - `Distance` (number): The maximum distance to check.
+   - `IgnoreList` (table, optional): A list of objects to ignore.
+
+- **Returns:**
+   - `closeObjects` (table): A table of objects that are within the specified distance from the reference object.
+
+- **Usage:**
+
+  ```lua
+  local nearbyObjects = DistanceService.IsClose(part, 10, {ignorePart})
+  print("Nearby objects:", #nearbyObjects)
   ```
 
 ### Notes
 
-- The function uses the `GetPivot` method to retrieve the pivot point of each object, then calculates the distance between the two points using vector subtraction and the `.Magnitude` property.
-- Ensure that both `SourceObject` and `CheckObject` have valid pivot points before calling this function.
+- The `GetDistance` function calculates the Euclidean distance between two objects based on their positions.
+- The `MoveTo` function creates a tween to move an object to a target position or object. It cancels any existing tween on the object before starting a new one.
+- The `RotateTo` function creates a tween to rotate an object to a target orientation or direction. It supports different types of targets, including `BasePart`, `CFrame`, `Vector3`, and rotation angles.
+- The `OverrideMovement` function cancels any ongoing tween and effectively "freezes" the object's current position or orientation.
+- The `IsMoving` function checks if an object is currently in motion by checking if it has an active tween.
+- The `IsClose` function identifies objects within a certain distance from a reference object, excluding specified objects.
 
 ---
