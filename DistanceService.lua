@@ -29,7 +29,7 @@ function DistanceService.RotateTo(SourceObject, Target, TimeToRotate, CordFrame)
 	local goal
 
 
-	if typeof(Target) == "Instance" and Target:IsA("BasePart") then
+	if typeof(Target) == "Instance" then
 		local targetPosition = Target:GetPivot().Position
 		local sourcePosition = SourceObject:GetPivot().Position
 
@@ -78,13 +78,85 @@ function DistanceService.RotateTo(SourceObject, Target, TimeToRotate, CordFrame)
 	end
 end
 
+function DistanceService.PathTo(ObjectToMove, Target, TimeToReach)
+	local startPosition = ObjectToMove:GetPivot().Position
+	local startRotation = ObjectToMove:GetPivot().Rotation
+
+	local targetPosition = Target:GetPivot().Position
+
+	local pathParams = {
+		AgentRadius = ObjectToMove.Size.X / 2,
+		AgentHeight = ObjectToMove.Size.Y,
+		AgentCanJump = true,
+		AgentCanClimb = false
+	}
+
+	local path = PathfindingService:CreatePath({
+		AgentRadius = pathParams.AgentRadius,
+		AgentHeight = pathParams.AgentHeight,
+		AgentCanJump = pathParams.AgentCanJump,
+		AgentCanClimb = pathParams.AgentCanClimb
+	})
+
+	local success, errorMessage = pcall(function()
+		path:ComputeAsync(startPosition, targetPosition)
+		local waypoints = path:GetWaypoints()
+		movingObjects[ObjectToMove] = { MovingType = "RotateTo" }
+
+		local function getBottomCFrame(part)
+			local size = part.Size
+			local bottomOffset = Vector3.new(0, -size.Y/2, 0)
+			return part.CFrame + bottomOffset
+		end
+
+		local NewTime = TimeToReach / #waypoints
+
+		for i = 1, #waypoints - 1 do
+			local waypoint = waypoints[i]
+			local nextWaypoint = waypoints[i + 1] or { Position = targetPosition }
+
+			local part = Instance.new("Part")
+			part.Size = Vector3.new(1, 1, 1)
+			part.Position = waypoint.Position
+			part.Transparency = 1
+			part.Anchored = true
+			part.CanCollide = false
+			part.Parent = game.Workspace
+
+			part.CFrame = getBottomCFrame(part)
+
+			local tweenInfo = TweenInfo.new(NewTime, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+
+			local goal = {}
+			goal.CFrame = CFrame.new(nextWaypoint.Position, waypoint.Position) * CFrame.Angles(0, math.pi, 0)
+
+			local tween = TweenService:Create(ObjectToMove, tweenInfo, goal)
+
+			tween:Play()
+			tween.Completed:Wait()
+
+			part:Destroy()
+		end
+		movingObjects[ObjectToMove] = nil
+	end)
+
+	if success and path.Status == Enum.PathStatus.Success then
+		return true
+	else
+		print("Pathfinding failed: " .. (errorMessage or path.Status.Name))
+		return false
+	end
+end
+
+
+
 function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
 	if not ObjectToMove or not Target or not TimeToMove then
 		error("ObjectToMove, Target, and TimeToMove must be provided.")
 	end
 
 	local targetPosition
-	if typeof(Target) == "Instance" and Target:IsA("BasePart") then
+	if typeof(Target) == "Instance" then
 		targetPosition = Target:GetPivot().Position
 	elseif typeof(Target) == "Vector3" then
 		targetPosition = Target
@@ -121,6 +193,8 @@ function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
 	tweenCompletedConnection:Disconnect()
 
 	return success
+
+
 end
 
 
