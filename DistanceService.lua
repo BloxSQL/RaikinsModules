@@ -1,4 +1,5 @@
 local TweenService = game:GetService("TweenService")
+local PathfindingService = game:GetService("PathfindingService")
 local DistanceService = {}
 
 local movingObjects = {}
@@ -38,7 +39,7 @@ function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
     end
 
     tween:Play()
-    movingObjects[ObjectToMove] = {Tween = tween, Target = targetPosition}
+    movingObjects[ObjectToMove] = {Tween = tween, Target = targetPosition, MovingType = "MoveTo"}
 end
 
 function DistanceService.RotateTo(Object, Target, TimeToRotate)
@@ -69,7 +70,7 @@ function DistanceService.RotateTo(Object, Target, TimeToRotate)
     end
 
     tween:Play()
-    movingObjects[Object] = {Tween = tween, TargetCFrame = targetCFrame}
+    movingObjects[Object] = {Tween = tween, TargetCFrame = targetCFrame, MovingType = "RotateTo"}
 end
 
 function DistanceService.OverrideMovement(Object)
@@ -77,8 +78,14 @@ function DistanceService.OverrideMovement(Object)
         error("Object must be provided.")
     end
 
-    if movingObjects[Object] then
-        movingObjects[Object].Tween:Cancel()
+    local movementData = movingObjects[Object]
+    if movementData then
+        if movementData.Tween then
+            movementData.Tween:Cancel()
+        end
+        if movementData.Path then
+            movementData.Path:Cancel()
+        end
         movingObjects[Object] = nil
     end
 
@@ -103,7 +110,10 @@ function DistanceService.IsClose(Object, Distance, IgnoreList)
     local closeObjects = {}
     local objectPosition = Object:GetPivot().Position
 
-    for _, part in pairs(workspace:FindPartsInRegion3(workspace.CurrentCamera.CFrame:ToWorldSpace(Object.CFrame).CoordinateFrame:ToRegion3(), nil, true)) do
+    local region = Region3.new(objectPosition - Vector3.new(Distance, Distance, Distance), objectPosition + Vector3.new(Distance, Distance, Distance))
+    local parts = workspace:FindPartsInRegion3(region, nil, true)
+
+    for _, part in pairs(parts) do
         if not table.find(IgnoreList, part) and part ~= Object then
             local partPosition = part:GetPivot().Position
             local distanceToPart = (objectPosition - partPosition).Magnitude
@@ -114,6 +124,46 @@ function DistanceService.IsClose(Object, Distance, IgnoreList)
     end
 
     return closeObjects
+end
+
+function DistanceService.PathTo(ObjectToMove, Target, CanClimb, ClimbHeight, TimeToReach)
+    if not ObjectToMove or not Target or not CanClimb or not TimeToReach then
+        error("ObjectToMove, Target, CanClimb, and TimeToReach must be provided.")
+    end
+
+    local targetPosition
+    if typeof(Target) == "Instance" and Target:IsA("BasePart") then
+        targetPosition = Target:GetPivot().Position
+    elseif typeof(Target) == "Vector3" then
+        targetPosition = Target
+    else
+        error("Target must be either a BasePart or a Vector3.")
+    end
+
+    local path = PathfindingService:CreatePath({
+        AgentRadius = ObjectToMove.Size.X / 2,
+        AgentHeight = ObjectToMove.Size.Y,
+        AgentCanJump = CanClimb,
+        AgentJumpHeight = ClimbHeight,
+        AgentMaxSlope = 45,
+    })
+
+    path:ComputeAsync(ObjectToMove.Position, targetPosition)
+    path:MoveTo(ObjectToMove)
+
+    movingObjects[ObjectToMove] = {Path = path, Target = targetPosition, MovingType = "PathTo"}
+
+    path.StatusChanged:Connect(function(status)
+        if status == Enum.PathStatus.Complete then
+            DistanceService.MoveTo(ObjectToMove, targetPosition, TimeToReach)
+        elseif status == Enum.PathStatus.NoPath then
+            warn("No path found to the target.")
+            movingObjects[ObjectToMove] = nil
+        elseif status == Enum.PathStatus.ClosestNoPath then
+            warn("Closest point reached, but no path found.")
+            DistanceService.MoveTo(ObjectToMove, path.StatusChanged:Wait().Position, TimeToReach)
+        end
+    end)
 end
 
 return DistanceService
