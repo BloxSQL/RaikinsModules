@@ -28,7 +28,6 @@ function DistanceService.RotateTo(SourceObject, Target, TimeToRotate)
 
 	local goal
 
-	local goal
 
 	if typeof(Target) == "Instance" and Target:IsA("BasePart") then
 		local targetPosition = Target:GetPivot().Position
@@ -54,22 +53,27 @@ function DistanceService.RotateTo(SourceObject, Target, TimeToRotate)
 	end
 
 	local tweenInfo = TweenInfo.new(TimeToRotate, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-	local tween = TweenService:Create(SourceObject, tweenInfo, goal)
+	if goal ~= nil then
+		local tween = TweenService:Create(SourceObject, tweenInfo, goal)
 
-	if movingObjects[SourceObject] then
-		if movingObjects[SourceObject].Tween then
-			movingObjects[SourceObject].Tween:Cancel()
+		if movingObjects[SourceObject] then
+			if movingObjects[SourceObject].Tween then
+				movingObjects[SourceObject].Tween:Cancel()
+			end
+			if movingObjects[SourceObject].Path then
+				movingObjects[SourceObject].Path:Cancel()
+			end
 		end
-		if movingObjects[SourceObject].Path then
-			movingObjects[SourceObject].Path:Cancel()
-		end
+
+		tween:Play()
+		movingObjects[SourceObject] = { Tween = tween, MovingType = "RotateTo" }
+
+		wait(TimeToRotate)
+		movingObjects[SourceObject] = nil
+		return true
+	else
+		return false
 	end
-
-	tween:Play()
-	movingObjects[SourceObject] = { Tween = tween, MovingType = "RotateTo" }
-
-	wait(TimeToRotate)
-	movingObjects[SourceObject] = nil
 end
 
 function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
@@ -97,15 +101,25 @@ function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
 	tween:Play()
 	movingObjects[ObjectToMove] = {Tween = tween, Target = targetPosition, MovingType = "MoveTo"}
 
-	wait(TimeToMove)
-	movingObjects[ObjectToMove] = nil
+	local success, errorMessage = pcall(function()
+		wait(TimeToMove)
+	end)
+
+	if not success then
+		return false
+	end
+
+	return true
 end
+
 
 
 function DistanceService.OverrideMovement(Object)
 	if not Object then
 		error("Object must be provided.")
 	end
+
+	local var = false
 
 	local movementData = movingObjects[Object]
 	if movementData then
@@ -116,9 +130,11 @@ function DistanceService.OverrideMovement(Object)
 			movementData.Path:Cancel()
 		end
 		movingObjects[Object] = nil
+		var	= true
 	end
 
 	Object.CFrame = Object.CFrame
+	return var
 end
 
 function DistanceService.IsMoving(Object)
