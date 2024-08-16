@@ -1642,7 +1642,7 @@ Calculates a future timestamp based on the current time and a given time increme
 
 ### Overview
 
-The `DistanceService` module provides functionality for calculating distances between objects, moving and rotating objects using tweens, managing ongoing tweens, and detecting objects within a certain distance from a given object. It leverages Roblox's `TweenService` to create smooth transitions.
+The `DistanceService` module provides utilities for measuring distances, moving objects, and controlling object movement within the game world. It includes functions for rotating and moving objects, pathfinding, overriding movement, checking if objects are moving or close to others, and sorting arrays of objects by distance.
 
 ### Functions
 
@@ -1651,65 +1651,109 @@ The `DistanceService` module provides functionality for calculating distances be
 Calculates the distance between two objects.
 
 - **Parameters:**
-   - `SourceObject` (Instance): The object from which the distance is measured.
-   - `CheckObject` (Instance): The object to which the distance is measured.
+   - `SourceObject` (Instance): The object to measure the distance from.
+   - `CheckObject` (Instance): The object to measure the distance to.
 
 - **Returns:**
-   - `distance` (number): The distance between the two objects.
+   - `distance` (number): The distance between `SourceObject` and `CheckObject`.
 
 - **Usage:**
 
   ```lua
-  local distance = DistanceService.GetDistance(part1, part2)
-  print("Distance between parts:", distance)
+  local distance = DistanceService.GetDistance(object1, object2)
+  print("Distance between objects:", distance)
+  ```
+
+#### `DistanceService.RotateTo(SourceObject, Target, TimeToRotate, CordFrame)`
+
+Rotates the `SourceObject` to face a target object or a specific direction over a specified time.
+
+- **Parameters:**
+   - `SourceObject` (Instance): The object to rotate.
+   - `Target` (Instance or nil): The object to face, or `nil` to rotate based on `CordFrame`.
+   - `TimeToRotate` (number): The time in seconds to complete the rotation.
+   - `CordFrame` (table or nil): The rotation angles to apply if `Target` is `nil`.
+
+- **Returns:**
+   - `success` (boolean): `true` if the rotation completed successfully, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local success = DistanceService.RotateTo(object, target, 2.5)
+  if success then
+      print("Rotation completed successfully.")
+  end
+  ```
+
+#### `DistanceService.PathTo(ObjectToMove, Target, TimeToReach)`
+
+Moves an object to a target position using pathfinding.
+
+- **Parameters:**
+   - `ObjectToMove` (Instance): The object to move.
+   - `Target` (Instance): The target object to move towards.
+   - `TimeToReach` (number): The time in seconds to reach the target.
+
+- **Returns:**
+   - `success` (boolean): `true` if the pathfinding and movement were successful, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local success = DistanceService.PathTo(object, target, 10)
+  if success then
+      print("Pathfinding and movement succeeded.")
+  else
+      print("Pathfinding failed.")
+  end
   ```
 
 #### `DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)`
 
-Moves an object to a target position over a specified duration using a tween.
+Moves an object directly to a target position or object over a specified time.
 
 - **Parameters:**
-   - `ObjectToMove` (Instance): The object to be moved.
-   - `Target` (Instance, Vector3): The target position or object to move to.
-   - `TimeToMove` (number): The duration of the movement in seconds.
+   - `ObjectToMove` (Instance): The object to move.
+   - `Target` (Instance or Vector3): The target object or position to move to.
+   - `TimeToMove` (number): The time in seconds to complete the movement.
+
+- **Returns:**
+   - `success` (boolean): `true` if the movement completed successfully, `false` otherwise.
 
 - **Usage:**
 
   ```lua
-  DistanceService.MoveTo(part, workspace.TargetPart, 5)
-  ```
-
-#### `DistanceService.RotateTo(Object, Target, TimeToRotate)`
-
-Rotates an object to face a target direction or orientation over a specified duration using a tween.
-
-- **Parameters:**
-   - `Object` (Instance): The object to be rotated.
-   - `Target` (Instance, CFrame, Vector3, number): The target orientation or direction. Can be a `BasePart`, `CFrame`, `Vector3`, or a number (rotation in degrees).
-   - `TimeToRotate` (number): The duration of the rotation in seconds.
-
-- **Usage:**
-
-  ```lua
-  DistanceService.RotateTo(part, workspace.TargetPart, 3)
+  local success = DistanceService.MoveTo(object, target, 5)
+  if success then
+      print("Movement completed successfully.")
+  end
   ```
 
 #### `DistanceService.OverrideMovement(Object)`
 
-Stops any ongoing tweens on the object and overrides its current position or orientation.
+Cancels any ongoing movement or rotation for a given object.
 
 - **Parameters:**
-   - `Object` (Instance): The object whose movement is to be overridden.
+   - `Object` (Instance): The object whose movement should be overridden.
+
+- **Returns:**
+   - `movementCancelled` (boolean): `true` if movement was successfully overridden, `false` if there was no movement to override.
 
 - **Usage:**
 
   ```lua
-  DistanceService.OverrideMovement(part)
+  local movementCancelled = DistanceService.OverrideMovement(object)
+  if movementCancelled then
+      print("Movement overridden.")
+  else
+      print("No movement to override.")
+  end
   ```
 
 #### `DistanceService.IsMoving(Object)`
 
-Checks if an object is currently moving (i.e., has an ongoing tween).
+Checks if an object is currently moving or rotating.
 
 - **Parameters:**
    - `Object` (Instance): The object to check.
@@ -1720,36 +1764,75 @@ Checks if an object is currently moving (i.e., has an ongoing tween).
 - **Usage:**
 
   ```lua
-  local isMoving = DistanceService.IsMoving(part)
-  print("Is part moving?", isMoving)
+  local isMoving = DistanceService.IsMoving(object)
+  if isMoving then
+      print("Object is currently moving.")
+  else
+      print("Object is not moving.")
+  end
   ```
 
 #### `DistanceService.IsClose(Object, Distance, IgnoreList)`
 
-Finds and returns objects within a specified distance from a given object.
+Finds all objects within a specified distance from a given object.
 
 - **Parameters:**
-   - `Object` (Instance): The reference object.
-   - `Distance` (number): The maximum distance to check.
-   - `IgnoreList` (table, optional): A list of objects to ignore.
+   - `Object` (Instance): The object to measure distance from.
+   - `Distance` (number): The maximum distance to consider.
+   - `IgnoreList` (table or nil): A list of objects to ignore during the check.
 
 - **Returns:**
-   - `closeObjects` (table): A table of objects that are within the specified distance from the reference object.
+   - `closeObjects` (table): A list of objects within the specified distance.
 
 - **Usage:**
 
   ```lua
-  local nearbyObjects = DistanceService.IsClose(part, 10, {ignorePart})
-  print("Nearby objects:", #nearbyObjects)
+  local closeObjects = DistanceService.IsClose(object, 10)
+  for _, closeObject in pairs(closeObjects) do
+      print("Close object found:", closeObject.Name)
+  end
   ```
+
+#### `DistanceService.SortAray(SourceObject, Aray, Arguments)`
+
+Sorts an array of objects by their distance from a source object and optionally removes non-instance objects or objects beyond a certain distance.
+
+- **Parameters:**
+   - `SourceObject` (Instance): The object to measure distances from.
+   - `Aray` (table): The array of objects to sort.
+   - `Arguments` (table): A table with optional parameters:
+      - `RemoveNonInstance` (boolean): Whether to remove non-instance objects from the array.
+      - `RemoveByDistance` (boolean): Whether to remove objects beyond a certain distance.
+      - `RemoveDistance` (number): The maximum distance for removal if `RemoveByDistance` is `true`.
+      - `SortByDistance` (boolean): Whether to sort the array by distance.
+      - `SortDistance` (number): An optional distance threshold for sorting.
+
+- **Returns:**
+   - `sortedArray` (table): The sorted (and optionally filtered) array.
+
+- **Usage:**
+
+  ```lua
+  local sortedArray = DistanceService.SortAray(sourceObject, objectsArray, {
+      RemoveNonInstance = true,
+      RemoveByDistance = true,
+      RemoveDistance = 15,
+      SortByDistance = true
+  })
+  print("Sorted array of objects:", sortedArray)
+  ```
+
+---
 
 ### Notes
 
-- The `GetDistance` function calculates the Euclidean distance between two objects based on their positions.
-- The `MoveTo` function creates a tween to move an object to a target position or object. It cancels any existing tween on the object before starting a new one.
-- The `RotateTo` function creates a tween to rotate an object to a target orientation or direction. It supports different types of targets, including `BasePart`, `CFrame`, `Vector3`, and rotation angles.
-- The `OverrideMovement` function cancels any ongoing tween and effectively "freezes" the object's current position or orientation.
-- The `IsMoving` function checks if an object is currently in motion by checking if it has an active tween.
-- The `IsClose` function identifies objects within a certain distance from a reference object, excluding specified objects.
+- The `GetDistance` function calculates the 3D distance between two objects using their pivot positions.
+- The `RotateTo` function uses `TweenService` to rotate an object smoothly over time, either towards another object or by a specified angle.
+- The `PathTo` function leverages `PathfindingService` to move an object along a path to a target object.
+- The `MoveTo` function uses `TweenService` to move an object directly to a target position or object.
+- The `OverrideMovement` function stops any ongoing movement or rotation for a specific object, effectively "freezing" it in place.
+- The `IsMoving` function checks whether an object is currently under any movement or rotation operation.
+- The `IsClose` function identifies objects within a given radius from a specified object, excluding those in an optional ignore list.
+- The `SortAray` function provides options to filter and sort arrays of objects based on distance from a source object, which is useful in situations where proximity-based logic is required.
 
 ---

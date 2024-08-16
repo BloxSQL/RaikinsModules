@@ -188,7 +188,6 @@ function DistanceService.MoveTo(ObjectToMove, Target, TimeToMove)
 
 	wait(TimeToMove)
 
-	-- Cleanup
 	movingObjects[ObjectToMove] = nil
 	tweenCompletedConnection:Disconnect()
 
@@ -256,6 +255,50 @@ function DistanceService.IsClose(Object, Distance, IgnoreList)
 
 	return closeObjects
 end
+
+function DistanceService.SortAray(SourceObject, Aray, Arguments)
+	if not SourceObject or not Aray or not Arguments then
+		error("SourceObject, Aray, and Arguments must be provided.")
+	end
+
+	if Arguments.RemoveNonInstance then
+		for i = #Aray, 1, -1 do
+			local item = Aray[i]
+			if not (item:IsA("Model") or item:IsA("BasePart")) or not item:GetPivot() then
+				table.remove(Aray, i)
+			end
+		end
+	end
+
+	if Arguments.RemoveByDistance then
+		if Arguments.RemoveDistance == nil then
+			Arguments.RemoveDistance = 0
+		end
+
+		for i = #Aray, 1, -1 do
+			local item = Aray[i]
+			local distance = DistanceService.GetDistance(SourceObject, item)
+			if distance > Arguments.RemoveDistance then
+				table.remove(Aray, i)
+			end
+		end
+	end
+
+	if Arguments.SortByDistance then
+		if Arguments.SortDistance == nil then
+			Arguments.SortDistance = 0
+		end
+
+		table.sort(Aray, function(a, b)
+			local distanceA = DistanceService.GetDistance(SourceObject, a)
+			local distanceB = DistanceService.GetDistance(SourceObject, b)
+			return distanceA < distanceB
+		end)
+	end
+
+	return Aray
+end
+
 
 
 return DistanceService
