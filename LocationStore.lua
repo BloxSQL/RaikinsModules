@@ -1,9 +1,17 @@
 local LocationStore = {}
 
 function LocationStore.Add(object)
-    local pivot = tostring(object:GetPivot())
-    return pivot
+    if typeof(object) == "Instance" then
+        local pivot = tostring(object:GetPivot())
+        return pivot
+    elseif typeof(object) == "CFrame" then
+        local pivot = tostring(object)
+        return pivot
+    else
+        return false
+    end
 end
+
 
 function LocationStore.Retrieve(PivotString)
     if not PivotString then
