@@ -19,7 +19,7 @@ function LocationStore.Retrieve(PivotString)
     end
 
     local PackedCframe = PivotString:split(", ")
-    			return CFrame.new(unpack(PackedCframe))
+    	return CFrame.new(unpack(PackedCframe))
 end
 
 return LocationStore
