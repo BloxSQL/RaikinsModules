@@ -89,4 +89,17 @@ function ServerStore.KeyExist(jobID, keyName)
     end
 end
 
+function ServerStore.GetServers()
+    local mainStoreData = mainDataStore:GetAsync("ServerStores") or {}
+    local allServers = {}
+
+    for _, jobIDs in pairs(mainStoreData) do
+        for _, id in ipairs(jobIDs) do
+            table.insert(allServers, id)
+        end
+    end
+
+    return allServers
+end
+
 return ServerStore
