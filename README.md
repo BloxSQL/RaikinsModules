@@ -1836,3 +1836,137 @@ Sorts an array of objects by their distance from a source object and optionally 
 - The `SortAray` function provides options to filter and sort arrays of objects based on distance from a source object, which is useful in situations where proximity-based logic is required.
 
 ---
+
+## ServerStore Module Documentation
+
+### Overview
+
+The `ServerStore` module provides functionalities for managing data in a distributed data store. It allows initialization, editing, and removal of data associated with server instances. The module uses Roblox’s `DataStoreService` to interact with the data stores and manages entries across multiple stores to ensure scalability and organization.
+
+### Functions
+
+#### `ServerStore.Init(jobID)`
+
+Initializes or registers a server instance with a unique `jobID`. If necessary, it creates a new store or updates an existing one.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+
+- **Returns:**
+   - `success` (boolean): `true` if the initialization was successful, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local success = ServerStore.Init("12345")
+  if success then
+      print("Server initialized successfully.")
+  end
+  ```
+
+#### `ServerStore.EditKey(jobID, keyName, valueInput)`
+
+Updates or sets a specific key-value pair in the data store associated with a given `jobID`.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+   - `keyName` (string): The key to update or set.
+   - `valueInput` (any): The value to assign to the key.
+
+- **Returns:**
+   - None
+
+- **Usage:**
+
+  ```lua
+  ServerStore.EditKey("12345", "exampleKey", "exampleValue")
+  ```
+
+#### `ServerStore.RemoveKey(jobID, keyName)`
+
+Removes a specific key-value pair from the data store associated with a given `jobID`.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+   - `keyName` (string): The key to remove.
+
+- **Returns:**
+   - None
+
+- **Usage:**
+
+  ```lua
+  ServerStore.RemoveKey("12345", "exampleKey")
+  ```
+
+#### `ServerStore.EndService(jobID)`
+
+Ends the service for a given `jobID` by removing it from the main data store. If no entries remain for a store, it is deleted.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+
+- **Returns:**
+   - `success` (boolean): `true` if the service was ended successfully, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local success = ServerStore.EndService("12345")
+  if success then
+      print("Service ended successfully.")
+  end
+  ```
+
+#### `ServerStore.Exist(jobID)`
+
+Checks if a given `jobID` exists in the main data store.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+
+- **Returns:**
+   - `exists` (boolean): `true` if the `jobID` exists, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local exists = ServerStore.Exist("12345")
+  if exists then
+      print("JobID exists.")
+  else
+      print("JobID does not exist.")
+  end
+  ```
+
+#### `ServerStore.KeyExist(jobID, keyName)`
+
+Checks if a specific key exists in the data store associated with a given `jobID`.
+
+- **Parameters:**
+   - `jobID` (string): The unique identifier for the server instance.
+   - `keyName` (string): The key to check for existence.
+
+- **Returns:**
+   - `exists` (boolean): `true` if the key exists, `false` otherwise.
+
+- **Usage:**
+
+  ```lua
+  local exists = ServerStore.KeyExist("12345", "exampleKey")
+  if exists then
+      print("Key exists.")
+  else
+      print("Key does not exist.")
+  end
+  ```
+
+---
+
+### Notes
+
+- **Data Store Limitation:** The `ServerStore.Init` function manages server entries in chunks, with a maximum of `maxEntriesPerStore` per store.
+- **Error Handling:** Functions that interact with `DataStoreService` use `pcall` to handle potential errors gracefully.
+- **Data Store Naming:** The `ServerStore` module creates and manages data stores with names based on the `jobID` prefixed by `"ServerStore_"`.
+
+---
