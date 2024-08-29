@@ -62,6 +62,20 @@ function ServerStore.EndService(jobID)
     return false
 end
 
+function ServerStore.GetKey(jobID, keyName)
+	local storeDataStore = DataStoreService:GetDataStore("ServerStore_" .. jobID)
+	local success, value = pcall(function()
+		return storeDataStore:GetAsync(keyName)
+	end)
+
+	if success then
+		return value
+	else
+		return nil
+	end
+end
+
+
 function ServerStore.Exist(jobID)
     local mainStoreData = mainDataStore:GetAsync("ServerStores") or {}
 
