@@ -21,15 +21,14 @@ function ServerStore.Init(jobID)
 
     for _, id in ipairs(mainStoreData[storeIndex]) do
         if id == jobID then
-            return true
+            return
         end
     end
 
     table.insert(mainStoreData[storeIndex], jobID)
     mainDataStore:SetAsync("ServerStores", mainStoreData)
-
-    return true
 end
+
 
 function ServerStore.EditKey(jobID, keyName, valueInput)
     local storeDataStore = DataStoreService:GetDataStore("ServerStore_" .. jobID)
