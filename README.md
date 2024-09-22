@@ -1970,3 +1970,139 @@ Checks if a specific key exists in the data store associated with a given `jobID
 - **Data Store Naming:** The `ServerStore` module creates and manages data stores with names based on the `jobID` prefixed by `"ServerStore_"`.
 
 ---
+
+## ClientMemory Module Documentation
+
+### Overview
+
+The `ClientMemory` module manages client-specific memory allocations, allowing the setting, retrieving, and updating of memory for individual players. It maintains a default memory value and dynamically adjusts memory for players as required.
+
+### Functions
+
+#### `ClientMemory.SetDefaultMemory(memoryCount)`
+
+Sets the default memory value that new players will start with.
+
+- **Parameters:**
+   - `memoryCount` (number): The new default memory count.
+
+- **Returns:**
+   - `result` (string): Returns `"Passed"` if the operation is successful; otherwise, it throws an error.
+
+- **Usage:**
+
+  ```lua
+  local result = ClientMemory.SetDefaultMemory(500)
+  print(result)  -- Output: "Passed"
+  ```
+
+#### `ClientMemory.SetPlayerMemory(player, memoryCount)`
+
+Sets a specific memory value for a given player.
+
+- **Parameters:**
+   - `player` (Player): The player for whom the memory is being set.
+   - `memoryCount` (number): The amount of memory to assign to the player.
+
+- **Returns:**
+   - `result` (string): Returns `"Passed"` if the memory was set successfully.
+
+- **Usage:**
+
+  ```lua
+  local result = ClientMemory.SetPlayerMemory(player, 400)
+  print(result)  -- Output: "Passed"
+  ```
+
+#### `ClientMemory:RegisterPlayer(player)`
+
+Registers a player in the `ClientMemory` system if they are not already present.
+
+- **Parameters:**
+   - `player` (Player): The player to register.
+
+- **Returns:**
+   - `result` (string): Returns `"Passed"` once the player is successfully registered.
+
+- **Usage:**
+
+  ```lua
+  local result = ClientMemory:RegisterPlayer(player)
+  print(result)  -- Output: "Passed"
+  ```
+
+#### `ClientMemory:RequestMemory(player)`
+
+Retrieves the current memory usage of a given player.
+
+- **Parameters:**
+   - `player` (Player): The player whose current memory usage is being requested.
+
+- **Returns:**
+   - `currentMemory` (number): The current memory value of the player.
+
+- **Usage:**
+
+  ```lua
+  local currentMemory = ClientMemory:RequestMemory(player)
+  print(currentMemory)  -- Output: 0 (initial value)
+  ```
+
+#### `ClientMemory:MaxMemory(player)`
+
+Gets the maximum memory allocation for a given player.
+
+- **Parameters:**
+   - `player` (Player): The player whose maximum memory is being queried.
+
+- **Returns:**
+   - `maxMemory` (number): The maximum memory allocated to the player.
+
+- **Usage:**
+
+  ```lua
+  local maxMemory = ClientMemory:MaxMemory(player)
+  print(maxMemory)  -- Output: DefaultMemory (e.g., 300 if not changed)
+  ```
+
+#### `ClientMemory:SetMemory(player, memoryLevel)`
+
+Sets the current memory usage of a player to a specific level.
+
+- **Parameters:**
+   - `player` (Player): The player whose memory level is being set.
+   - `memoryLevel` (number): The new memory level to assign.
+
+- **Returns:**
+   - `result` (string): Returns `"Passed"` if the memory level is set successfully.
+
+- **Usage:**
+
+  ```lua
+  local result = ClientMemory:SetMemory(player, 150)
+  print(result)  -- Output: "Passed"
+  ```
+
+---
+
+### Internal Functions
+
+#### `FindOrCreatePlayer(player)`
+
+This is an internal function that searches for an existing player in the `ClientTable`. If the player is not found, it creates a new entry for the player with default values.
+
+- **Parameters:**
+   - `player` (Player): The player to find or create.
+
+- **Returns:**
+   - `playerData` (table): The player's data table with fields `Player`, `ClientMemory`, and `CurrentMemory`.
+
+---
+
+### Notes
+
+- **Error Handling:** The functions make use of `assert` statements to ensure correct parameter types and presence.
+- **Default Memory:** The module initializes new players with a default memory value that can be adjusted using `SetDefaultMemory`.
+- **Data Management:** The `ClientMemory` module maintains a `ClientTable` that stores memory data for each registered player, making it easy to manage and adjust memory allocations.
+
+---
