@@ -122,6 +122,15 @@ game.Players.PlayerAdded:Connect(function(player)
 				end
 
 				LastPosition = player.Character:GetPivot()
+
+				------------------------------------------------------------ CUSTOM TRACKERS
+
+				if player:GetAttribute("Test Attribute") > 5 then -- Change this to any stat you want to track, wether it be variables or other things some scripting is needed for this segment if you would like yo add overides.
+					AntiCheatController:IncreasePoints(player, 1, PointWarns)
+				end
+
+				------------------------------------------------------------ CUSTOM TRACKERS
+
 			else
 
 				break
@@ -133,3 +142,5 @@ game.Players.PlayerAdded:Connect(function(player)
 
 	task.spawn(NewCo)
 end)
+
+print("Anti cheat fully loaded")
